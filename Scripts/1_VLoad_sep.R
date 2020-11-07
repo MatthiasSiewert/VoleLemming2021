@@ -9,7 +9,7 @@
 ###
 
 ######### GIS libraries
-#library(raster)  # raster data
+library(raster)  # raster data
 #library(rgdal)  # input/output, projections
 #library(maptools)# autoloads sp
 #library(sp)  # vector data
