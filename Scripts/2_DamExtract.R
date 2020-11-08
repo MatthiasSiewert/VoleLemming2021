@@ -97,7 +97,7 @@ meanTable$year   <- ifelse(year(meanTable$date) == 2018, 2018, ifelse(year(meanT
 # only use 2018 and 2019
 meanTable <- subset(meanTable, date > as.Date("2018-01-01"))
 meanTable
-write_csv(meanTable, 'Table/meanTable.csv')
+write_csv(meanTable, 'Table/Out/meanTable.csv')
 
 
 ##### extract the mean of all Damage and all control plots per study area
