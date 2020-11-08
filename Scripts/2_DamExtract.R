@@ -16,8 +16,8 @@ library(rgdal)
 # library(cowplot)
 # library(wesanderson)
 # library(ggsci)
-# #library(doBy)
-# library(ggpmisc)
+library(doBy)
+ library(ggpmisc)
 
 
 
