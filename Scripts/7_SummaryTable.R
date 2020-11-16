@@ -46,6 +46,6 @@ SummaryTableOut
 
 
 temp <- xtable(SummaryTableOut,digits =3)   
-print.xtable(temp, type="html", file = "Tables/SummaryTableOut.html", floating.environment='sidewaystable')
+print.xtable(temp, type="html", file = "Table/SummaryTableOut.html", floating.environment='sidewaystable')
 
 
