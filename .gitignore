@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-Raster
-Vector/
-Table
+Raster/
+Vector/LCC
+Table/Out
+Vector
