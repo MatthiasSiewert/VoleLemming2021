@@ -1,22 +1,20 @@
-# Summarytable
+###################################################################################
+# author: Matthias Siewert
+# matthias.siewert@umu.se
+########
+## 2020-05-02
+###
+# Generate a summary table (Table 1)
+###
 
 #############################
-# Summary table
 library(xtable)
 
-# UAV Mean NDVI 2018, Mean NDVI 2918
-# Modis Modis /sentinel NDVI 2018, 2019
-# reduction in NDVI in mean for entire study area, as percentage
-# mean N rodent damage hits in 20x20 raster ( total, percent)
-# mean N control plots hits in 20x20 raster (total, percent)
-# global MoranI 
-# variogram ranges
-
+# View summary Table
 SummaryTable
 
 
-
-################# create an output tabe for print
+################# create an output table for print
 SummaryTableOut <- as.data.frame(SummaryTable$area)
 colnames(SummaryTableOut) <- c('Study area')
 
