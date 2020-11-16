@@ -41,7 +41,6 @@ SummaryTableOut$"Maximum range of spatial autocorrelation (m)" <- round(as.numer
 
 # reorder
 SummaryTableOut <- SummaryTableOut[c(2,3,4,1),]
-
 SummaryTableOut
 
 
