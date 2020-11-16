@@ -1,21 +1,29 @@
+###################################################################################
+# author: Matthias Siewert
+# matthias.siewert@umu.se
+########
+## 2020-05-02
+###
+# Script for change detection. Detected reduction in NDVI reflects rodent impact on vegetation:
+###
+
+# Load libraries
 # library(rgdal)
 # library(doParallel)
 # library(raster)
 # library(snow)
-# library(ggplot2)
-# library(cowplot)
-# 
+library(ggplot2)
+library(cowplot)
+library(ggsci)
+
 ###############################################
-###################################################################33
-## Load land covers
-# load land cover classification:
+# Load land cover classification:
 NFlccDis <- readOGR("Vector/LCC/NFlccDis.shp")
 NTlccDis <- readOGR("Vector/LCC/NTlccDis.shp")
 VJlccDis <- readOGR("Vector/LCC/VJlccDis.shp")
 KJlccDis <- readOGR("Vector/LCC/KJlccDis.shp")
 
 ####################################################
-### Script for change detection:
 
 ##### Copy the pairs in a folder for peak season
 #NF
@@ -42,7 +50,8 @@ for (i in 1:length(Rastlist)) print(res(Rastlist[[i]]))
 
 names(Rastlist)
 
-##### Subtraction
+##### Subtraction:
+# Subtract 2018 and 2019 raster imagery 
 NF2018minus19 <- overlay(Rastlist[[4]], Rastlist[[3]], fun=function(x,y){return(x-y)})
 NF2018minus19 <- writeRaster(NF2018minus19, 'Raster/6_2018minus2019/NF2018minus19.tif', overwrite =T)
 
@@ -55,33 +64,10 @@ VJ2018minus19 <- writeRaster(VJ2018minus19, 'Raster/6_2018minus2019/VJ2018minus1
 KJ2018minus19 <- overlay(Rastlist[[2]], Rastlist[[1]], fun=function(x,y){return(x-y)})
 KJ2018minus19 <- writeRaster(KJ2018minus19, 'Raster/6_2018minus2019/KJ2018minus19.tif', overwrite =T)
 
-# plot(mask(crop(NF2018minus19,NFarea),NFarea))
-# 
-# temp <- raster::hist(mask(crop(NF2018minus19,NFarea),NFarea), maxpixels=1000000,freq = F, col = 'red',nclass =100, ylim = )
-# temp$counts = log(temp$counts)
-# plot(temp)
-# 
-# temp <- raster::hist(mask(crop(NT2018minus19,NTarea),NTarea), maxpixels=1000000,freq = F, col = 'red',nclass =100)
-# temp$counts = log(temp$counts)
-# plot(temp)
-# 
-# temp <- raster::hist(mask(crop(VJ2018minus19,VJarea),VJarea), maxpixels=1000000,freq = F, col = 'red',nclass =100)
-# temp$counts = log(temp$counts)
-# plot(temp)
-# 
-# temp <- raster::hist(mask(crop(KJ2018minus19,KJarea),KJarea), maxpixels=1000000,freq = F, col = 'red',nclass =100)
-# temp$counts = log(temp$counts)
-# plot(temp)
-
-
-##########################################
-
-### ...
-
 #################################
 # Change detection:
 # Set a threshold to the NDVI as a mask.
-# Also mask individual land cover classes that are potential under or over estimations.
+# And mask individual land cover classes that are potential under- or overestimations.
 
 ############################# NF
 #Define Threshold function best 0.07
@@ -191,7 +177,7 @@ KJ2018minus19damBinMin <- writeRaster(KJ2018minus19damBin, 'Raster/7_ImpactCutof
 
 ###############################################################################################
 
-## Load Impact polygons
+## Load impact polygons
 DamPlots <- readOGR("Vector/PlotData/RodentPlots_2019_polyg.gpkg", "DamagePlots_2019_polyg")
 DamPlots
 # Plot to see if they loaded 
@@ -272,7 +258,7 @@ temp2$error <- ifelse(grepl("Min",temp2$names), "min", temp2$error)
 temp2$error <- ifelse(grepl("Max",temp2$names), "max", temp2$error)
 temp2$error
 
-Fig_dam_count_comp <- ggplot(data=temp2[temp2$error %in% c("best"),], aes(x=damCount, y = damPerc)) +
+Fig_S1_ImpactCount <- ggplot(data=temp2[temp2$error %in% c("best"),], aes(x=damCount, y = damPerc)) +
   #geom_smooth(aes(x=damCount, y = damPerc,colour = area.x), method=lm, se=F) +
   geom_errorbar(aes(ymin=temp2[temp2$error %in% c("min"),]$damPerc,ymax=temp2[temp2$error %in% c("max"),]$damPerc),col = "grey30",width = 0.5,) +# makes it unreadable
   #geom_point()
@@ -286,8 +272,8 @@ Fig_dam_count_comp <- ggplot(data=temp2[temp2$error %in% c("best"),], aes(x=damC
         legend.title=element_blank()) +
   labs(y= "Mapped impact areas in % of 2m x 2m plots", x = "Field inventory impact count in 2m x 2m plots") 
 #xlim( c(0, 800)) + ylim( c(0, 80))
-Fig_dam_count_comp
+Fig_S1_ImpactCount
 
-ggsave("Plots/Fig_damageCount/Fig_dam_count_comp.pdf", Fig_dam_count_comp,  width = 12, height = 12, units = "cm")
-ggsave("Plots/Fig_damageCount/Fig_dam_count_comp.png", Fig_dam_count_comp,  width = 12, height = 12, units = "cm")
+ggsave("Plots/Fig_S1_ImpactCount/Fig_S1_ImpactCount.pdf", Fig_dam_count_comp,  width = 12, height = 12, units = "cm")
+ggsave("Plots/Fig_S1_ImpactCount/Fig_S1_ImpactCount.png", Fig_dam_count_comp,  width = 12, height = 12, units = "cm")
 
