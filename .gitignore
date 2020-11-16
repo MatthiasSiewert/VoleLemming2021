@@ -3,5 +3,6 @@
 .RData
 .Ruserdata
 Raster
-Vector
+Vector/
 Table
+Plots/
