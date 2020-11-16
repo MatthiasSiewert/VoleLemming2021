@@ -274,6 +274,6 @@ Fig_S1_ImpactCount <- ggplot(data=temp2[temp2$error %in% c("best"),], aes(x=damC
 #xlim( c(0, 800)) + ylim( c(0, 80))
 Fig_S1_ImpactCount
 
-ggsave("Plots/Fig_S1_ImpactCount/Fig_S1_ImpactCount.pdf", Fig_dam_count_comp,  width = 12, height = 12, units = "cm")
-ggsave("Plots/Fig_S1_ImpactCount/Fig_S1_ImpactCount.png", Fig_dam_count_comp,  width = 12, height = 12, units = "cm")
+ggsave("Plots/Fig_S1_ImpactCount.pdf", Fig_dam_count_comp,  width = 12, height = 12, units = "cm")
+ggsave("Plots/Fig_S1_ImpactCount.png", Fig_dam_count_comp,  width = 12, height = 12, units = "cm")
 

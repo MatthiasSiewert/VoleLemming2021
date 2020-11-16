@@ -354,7 +354,7 @@ Fig_habitat <- plot_grid(tempPlot1, tempPlot2, nrow = 2, align = "v", labels = c
 Fig_habitat
 
 # Save the figures
-ggsave("Plots/Fig_4_Habitat/Fig_HabitatsPerc.pdf", Fig_habitat,  width = 25, height = 12, units = "cm")
-ggsave("Plots/Fig_4_Habitat/Fig_HabitatsPerc.png", Fig_habitat,  width = 25, height = 12, units = "cm")
+ggsave("Plots/Fig_4_HabitatsPerc.pdf", Fig_habitat,  width = 25, height = 12, units = "cm")
+ggsave("Plots/Fig_4_HabitatsPerc.png", Fig_habitat,  width = 25, height = 12, units = "cm")
 
 SummaryTablebackup <- SummaryTable

@@ -232,5 +232,5 @@ Fig2_damPlot_sep
 Fig2_damPlot_comp <- plot_grid(Fig2_damPlot_all,Fig2_damPlot_sep,rel_widths = c(1, 1), labels = c("a","b"))
 Fig2_damPlot_comp
 
-ggsave("Plots/Fig_2_NDVIvsImpact/Fig_2_NDVIvsImpact.pdf", Fig2_damPlot_comp,  width = 25, height = 12, units = "cm")
-ggsave("Plots/Fig_2_NDVIvsImpact/Fig_2_NDVIvsImpact.png", Fig2_damPlot_comp,  width = 25, height = 12, units = "cm")
+ggsave("Plots/Fig_2_NDVIvsImpact.pdf", Fig2_damPlot_comp,  width = 25, height = 12, units = "cm")
+ggsave("Plots/Fig_2_NDVIvsImpact.png", Fig2_damPlot_comp,  width = 25, height = 12, units = "cm")

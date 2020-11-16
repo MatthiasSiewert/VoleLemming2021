@@ -89,8 +89,8 @@ VariogrPl <- ggplot(VarioALL, aes(x = dist, y = gamma, colour = area)) +
   theme(legend.position= "right")
 VariogrPl
 
-ggsave("Plots/Fig_S2_variogram/Fig_S2_variogram.pdf", VariogrPl,  width = 12, height = 8, units = "cm")
-ggsave("Plots/Fig_S2_variogram/Fig_S2_variogram.png", VariogrPl,  width = 12, height = 8, units = "cm")
+ggsave("Plots/Fig_S2_variogram.pdf", VariogrPl,  width = 12, height = 8, units = "cm")
+ggsave("Plots/Fig_S2_variogram.png", VariogrPl,  width = 12, height = 8, units = "cm")
 
 
 # Get variogram parameters:
