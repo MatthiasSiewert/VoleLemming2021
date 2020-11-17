@@ -2,7 +2,6 @@
 # author: Matthias Siewert
 # matthias.siewert@umu.se
 ########
-## 2020-07-02
 ###
 # This script is to extract detected rodent impact per habitat
 # provides figure 4 and gathers data for Table 1. 
@@ -11,7 +10,7 @@
 # Load libraries
 library(tidyverse)
 library(rgdal)
-library(sf) # Simple Features for R
+library(sf) 
 library(raster)
 library(exactextractr) 
 library(ggplot2)
@@ -22,28 +21,17 @@ beginCluster()
 
 options(scipen=999)
 
-#################################################################
 
-####   This script extracts measures relevant for the entire study areas
-
-# Mean NDVI
-# Mean Damage
-# Spatial autocorrelation of damage
-
-#################################################################
-
-###################################################################33
+###################################################################
 ## Load land covers
-# load land cover classification:
 NFlccDisCrp <- readOGR("Vector/LCCcrop/NFlccDisCrp.shp")
 NTlccDisCrp <- readOGR("Vector/LCCcrop/NTlccDisCrp.shp")
 VJlccDisCrp <- readOGR("Vector/LCCcrop/VJlccDisCrp.shp")
 KJlccDisCrp <- readOGR("Vector/LCCcrop/KJlccDisCrp.shp")
 ##############################################3
 #### NDVI
-
-# List all files generated in script 1VLoad_sep
-RastList <- list.files("Raster/2_NDVI/", full.names=T, recursive =T)
+# List all NDVI files
+RastList <- list.files("Raster/4_Cropped/", full.names=T, recursive =T)
 ## Subset for summer peak season flights only:
 RastList <- RastList[grep("18.07.27|2018.07.28|2018.07.29|18.07.30|19.07.27|19.07.31|19.08.03|19.08.04", RastList)]    #, names(RastList))]   
 RastList
@@ -71,7 +59,6 @@ temp <-  RastList[grepl("KJ", RastList)]
 for (i in (temp)) {
   temp2 <- mask(raster(i), KJlccDis[KJlccDis$class %in% c("water"),], inverse =T, updatevalue = NA)
   writeRaster(temp2, paste0('Raster/4_CrpMasked/',names(temp2),'crp.tif'),overwrite =T)}
-
 
 
 # use the masked files to generate a table

@@ -2,7 +2,6 @@
 # author: Matthias Siewert
 # matthias.siewert@umu.se
 ########
-## 2020-08-10
 ###
 # This script provides variograms of rodent damage and adds the spatial range to the summary table.
 ###
@@ -21,6 +20,7 @@ library(tidyverse)
 ####   This script extracts analyzes spatial autocorrelation of the rodent damage
 # NF
 temp <- as(NF2018minus19damBinBestCrp, 'SpatialPointsDataFrame')
+set.seed(1)
 temp <- temp[sample(1:length(temp),100000),]   # subsample to reduce processing time
 VarioNF <- variogram(temp@data$NFareaNF2018minus19damBinBestCrp ~ 1, data = temp,width = .3,cutoff = 20)
 #VarioNF.m <- fit.variogram(VarioNF, vgm(1,"Exp",1,0))
@@ -29,6 +29,7 @@ VarioNF.m <- fit.variogram(VarioNF,  vgm(.4, "Exp", 0.4, 0, add.to=vgm(.1, "Exp"
 
 # NT
 temp <- as(NT2018minus19damBinBestCrp, 'SpatialPointsDataFrame')
+set.seed(1)
 temp <- temp[sample(1:length(temp),100000),]   # subsample to reduce processing time
 VarioNT <- variogram(temp@data$NTareaNT2018minus19damBinBestCrp ~ 1, data = temp,width = .3,cutoff = 20)
 #VarioNT.m <- fit.variogram(VarioNT, vgm(1,"Exp",1,0))
@@ -37,6 +38,7 @@ VarioNT.m <- fit.variogram(VarioNT,  vgm(.4, "Exp", 0.5, 0, add.to=vgm(1, "Exp",
 
 # VJ
 temp <- as(VJ2018minus19damBinBestCrp, 'SpatialPointsDataFrame')
+set.seed(1)
 temp <- temp[sample(1:length(temp),100000),]   # subsample to reduce processing time
 VarioVJ <- variogram(temp@data$VJareaVJ2018minus19damBinBestCrp ~ 1, data = temp,width = .3,cutoff = 20)
 #VarioVJ.m <- fit.variogram(VarioVJ, vgm(1,"Exp",1,0))
@@ -45,6 +47,7 @@ VarioVJ.m <- fit.variogram(VarioVJ, vgm(.4, "Exp", 0.5, 0, add.to=vgm(1, "Exp", 
 
 # KJ
 temp <- as(KJ2018minus19damBinBestCrp, 'SpatialPointsDataFrame')
+set.seed(1)
 temp <- temp[sample(1:length(temp),100000),]   # subsample to reduce processing time
 VarioKJ <- variogram(temp@data$KJareaKJ2018minus19damBinBestCrp ~ 1, data = temp,width = .3,cutoff = 20)
 #VarioKJ.m <- fit.variogram(VarioKJ, vgm(1,"Exp",1,0))

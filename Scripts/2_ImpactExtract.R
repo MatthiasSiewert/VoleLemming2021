@@ -2,7 +2,6 @@
 # author: Matthias Siewert
 # matthias.siewert@umu.se
 ########
-## 2020-05-02
 ###
 # This script is to extract rodent impact from the UAV as change in NDVI
 # at the location of ground plots and then combines this with ground inventory.
@@ -14,39 +13,31 @@ library(tidyverse)
 library(lubridate)
 library(raster)
 library(readODS)
+library(ggplot2)
 library(cowplot)
 library(ggsci)
 library(ggpmisc)
 
 #########################################################
-# Load digitized Rodent damage polygons
+# Load digitized Rodent survey polygons of field plots from 2019
 ###############################
 
-## Load damage polygons
+## Load polygons
 DamPlots <- readOGR("Vector/PlotData/RodentPlots_2019_polyg.gpkg", "DamagePlots_2019_polyg")
 
 
 #####
-# extract data from uncroped snow replaced files .. (because some plots are outside of core area)
-
+# extract data from NDVI files
 Rastlist <- list.files("Raster/2_NDVI/",pattern = ".tif$", full.names=T, recursive =T)
 Rastlist
 
-# have a look at an example:
-plot(raster(Rastlist[[4]]))
-plot(NFarea, add = T)
-plot(DamPlots, add = T)
-
-
-# # example extraction
-# endCluster()  # wont work with cluster on
-# test <- raster::extract(raster(Rastlist[[14]]),DamPlots)
-# DamPlots$name
-# names(test) <- DamPlots$name
-# test
+# # have a look at an example:
+# plot(raster(Rastlist[[4]]))
+# plot(NFarea, add = T)
+# plot(DamPlots, add = T)
 
 ########################
-# The following loops through all rasters and extract NDVI pixel values (not using weights)
+# The following loops through all rasters and extracts NDVI pixel values
 # and stores them in a temporary list with a sublist for each raster
 
 # create empty list for results
@@ -62,7 +53,9 @@ for (i in 1:length(Rastlist)){
 
 # Collapse into one main list
 DamList <- unlist(DamList, recursive =F)
-#DamList # Takes long to load
+#DamList # Takes long to View
+
+
 ##################################################
 # extract values
 
@@ -87,17 +80,14 @@ meanTable$date <- as.Date(as.character(substr(meanTable$names,1,10)), "%Y.%m.%d"
 
 meanTable$plot <- substr(meanTable$names, nchar(meanTable$names)-4, nchar(meanTable$names))
 meanTable$type <- substr(meanTable$names, nchar(meanTable$names)-1, nchar(meanTable$names)-1)
-
-#meanTable$season <- ifelse(month(meanTable$date) == 6, 'spring', ifelse(month(meanTable$date) == 9, 'autumn', 'peak')) 
 meanTable$year   <- ifelse(year(meanTable$date) == 2018, 2018, ifelse(year(meanTable$date) == 2019, 2019, NA)) 
 
-# only use 2018 and 2019
-meanTable <- subset(meanTable, date > as.Date("2018-01-01"))
+# View and write file
 meanTable
 write_csv(meanTable, 'Table/Out/meanTable.csv')
 
 
-##### extract the mean of all Damage and all control plots per study area
+##### extract the mean of all rodent impacted and all control plots per study area
 meanTable2 <- meanTable %>% 
   group_by(area, date, type) %>%
   summarise(mean_impactNDVI = mean(meanNDVI))
@@ -108,7 +98,8 @@ meanTable2$year   <- ifelse(year(meanTable2$date) == 2018, 2018, ifelse(year(mea
 #meanTable2 <- subset(meanTable2, date > as.Date("2018-01-01"))
 meanTable2
 
-############################################################## combine with damage information
+##############################################################
+## Combine with ground survey information
 ## Load digitized ground inventory data
 
 dmOut <- readRDS("Table/dmOut.rds")
@@ -117,33 +108,24 @@ dmOut
 ########## create a Summary table
 # sums
 sum(dmOut[[4]]) # test count for one plot
-temp <- lapply(dmOut, sum)
 
+temp <- lapply(dmOut, sum)
 sumTable <- as.data.frame(do.call(rbind, temp))
 colnames(sumTable) <- "damCount"
 sumTable$plot <- rownames(sumTable)
 sumTable$type <-substr(sumTable$plot,4,4)
 sumTable$area <-substr(sumTable$plot,1,2)
 
-ggplot(sumTable, aes(plot, damCount)) +
-  geom_bar( stat = "identity", aes(fill = type))
-
-# damage for a specific study area
-temp <- sumTable %>% 
-  group_by(area, type) %>%
-  summarise(mean_impact = mean(damCount))
-
-ggplot(temp, aes(area, mean_impact)) +
-  geom_bar( stat = "identity", aes(fill = type), position = position_dodge())
 
 ### create a tibble
 sumTable <- as_tibble(sumTable)
-
+sumTable
 ###################################33
 # load habitat classes
 habitatTable <- read_csv('Table/habitatTable.csv')
 
 habitatTable
+# change order for publication
 habitatTable$habitat = factor(habitatTable$habitat,levels = c("Dry heath & Barren",
                                               "Betula nana heath",
                                               "Mesic heath & Snowbed",
@@ -151,9 +133,11 @@ habitatTable$habitat = factor(habitatTable$habitat,levels = c("Dry heath & Barre
                                               "Birch forest",
                                               "Wetlands & meadows"))
 
-
 sumTable <- merge(sumTable, habitatTable[, c('plot', 'habitat')], by = 'plot')
 
+
+##############
+# Some overview, merge  and clean up
 sumTable
 meanTable
 
@@ -180,16 +164,11 @@ temp2$y2019 <- as.numeric(as.character(temp2$y2019))
 temp2$diff19minus18 <- temp2$y2019 - temp2$y2018
 temp2
 
-# use only peak season
-#temp <- subset(temp2 , season == 'peak')
-#temp <- subset(temp2, plot != c('KJ-C1' , 'KJ-D1'))
-
 impactTable <- temp2
 impactTable
 
 # Check the regression
 summary(lm(damCount ~ diff19minus18 , data = impactTable))
-
 
 # Plot comparing ground count of rodent impact with NDVI
 Fig2_damPlot_all <- ggplot(impactTable, aes(x=damCount, y = diff19minus18)) +

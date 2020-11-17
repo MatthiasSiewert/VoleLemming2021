@@ -2,7 +2,6 @@
 # author: Matthias Siewert
 # matthias.siewert@umu.se
 ########
-## started 2019-11-23
 ###
 # This script is to collect drone flight raster maps for further analysis
 ###
@@ -51,6 +50,4 @@ for (i in VJrast) {writeRaster(mask(crop(raster(paste0('Raster/2_NDVI/VJ/', i)),
 
 KJrast <- list.files("Raster/2_NDVI/KJ/",pattern = "_snow.tif$", full.names=F, recursive =T)
 for (i in KJrast) {writeRaster(mask(crop(raster(paste0('Raster/2_NDVI/KJ/', i)),KJarea), KJarea), paste0('Raster/4_Cropped/',i,'crp.tif'),overwrite =T)}
-
-
 

@@ -2,12 +2,12 @@
 # author: Matthias Siewert
 # matthias.siewert@umu.se
 ########
-## 2020-05-02
 ###
 # Script for change detection. Detected reduction in NDVI reflects rodent impact on vegetation:
 ###
 
 # Load libraries
+library(tidyverse)
 # library(rgdal)
 # library(doParallel)
 # library(raster)
@@ -68,6 +68,7 @@ KJ2018minus19 <- writeRaster(KJ2018minus19, 'Raster/6_2018minus2019/KJ2018minus1
 # Change detection:
 # Set a threshold to the NDVI as a mask.
 # And mask individual land cover classes that are potential under- or overestimations.
+# These are visually derived and vary by study area. 
 
 ############################# NF
 #Define Threshold function best 0.07
@@ -99,7 +100,7 @@ NF2018minus19damBinMax <- writeRaster(NF2018minus19damBin, 'Raster/7_ImpactCutof
 ############################# NT
 #Define Threshold function best 0.07
 NT2018minus19damBin <- NT2018minus19
-fun <- function(x) {ifelse(x  > -0.07, 0,1)}  #seems ok
+fun <- function(x) {ifelse(x  > -0.07, 0,1)}  
 NT2018minus19damBin <- calc(NT2018minus19damBin, fun)
 # LCC exclude: water; Gram Meadow, barren
 NT2018minus19damBin <- raster::mask(NT2018minus19damBin, NTlccDis[NTlccDis$class %in% c("water", "gram_meadow","barren"),], inverse =T, updatevalue = 0)
@@ -107,7 +108,7 @@ NT2018minus19damBinBest <- writeRaster(NT2018minus19damBin, 'Raster/7_ImpactCuto
 
 #Define Threshold function max 0.04
 NT2018minus19damBin <- NT2018minus19
-fun <- function(x) {ifelse(x  > -0.04, 0,1)}  #seems ok
+fun <- function(x) {ifelse(x  > -0.04, 0,1)}  
 NT2018minus19damBin <- calc(NT2018minus19damBin, fun)
 # LCC exclude: water;
 NT2018minus19damBin <- raster::mask(NT2018minus19damBin, NTlccDis[NTlccDis$class %in% c("water"),], inverse =T, updatevalue = 0)
@@ -115,7 +116,7 @@ NT2018minus19damBinMax <- writeRaster(NT2018minus19damBin, 'Raster/7_ImpactCutof
 
 #Define Threshold function min 0.09
 NT2018minus19damBin <- NT2018minus19
-fun <- function(x) {ifelse(x  > -0.09, 0,1)}  #seems ok
+fun <- function(x) {ifelse(x  > -0.09, 0,1)}  
 NT2018minus19damBin <- calc(NT2018minus19damBin, fun)
 # LCC exclude: water; barren, dry_heath; Gram Meadow
 NT2018minus19damBin <- raster::mask(NT2018minus19damBin, NTlccDis[NTlccDis$class %in% c("water", "gram_meadow", "dry_heath","barren"),], inverse =T, updatevalue = 0)
@@ -124,18 +125,19 @@ NT2018minus19damBinMin <- writeRaster(NT2018minus19damBin, 'Raster/7_ImpactCutof
 
 
 
-############################# VJ best 0.8
+############################# VJ
+#Define Threshold function best 0.07
 VJ2018minus19damBin <- VJ2018minus19
-fun <- function(x) {ifelse(x  > -0.07, 0,1)} # maybe even 0.8
+fun <- function(x) {ifelse(x  > -0.07, 0,1)} 
 VJ2018minus19damBin <- calc(VJ2018minus19damBin, fun)
 # LCC exclude: water; barren; wetland; gram_meadow;
 VJ2018minus19damBin <- raster::mask(VJ2018minus19damBin, VJlccDis[VJlccDis$class %in% c("water", "barren","wetland","gram_meadow"),], inverse =T, updatevalue = 0)
 VJ2018minus19damBinBest <- writeRaster(VJ2018minus19damBin, 'Raster/7_ImpactCutoff/VJ2018minus19damBinBest.tif',overwrite=TRUE)
 
 
-#Define Threshold function max 0.07
+#Define Threshold function max 0.04
 VJ2018minus19damBin <- VJ2018minus19
-fun <- function(x) {ifelse(x  > -0.04, 0,1)} # maybe even 0.8
+fun <- function(x) {ifelse(x  > -0.04, 0,1)} #
 VJ2018minus19damBin <- calc(VJ2018minus19damBin, fun)
 # LCC exclude: water; barren
 VJ2018minus19damBin <- raster::mask(VJ2018minus19damBin, VJlccDis[VJlccDis$class %in% c("water", "barren"),], inverse =T, updatevalue = 0)
@@ -143,7 +145,7 @@ VJ2018minus19damBinMax <- writeRaster(VJ2018minus19damBin, 'Raster/7_ImpactCutof
 
 #Define Threshold function min 0.11
 VJ2018minus19damBin <- VJ2018minus19
-fun <- function(x) {ifelse(x  > -0.11, 0,1)} # maybe even 0.8
+fun <- function(x) {ifelse(x  > -0.11, 0,1)} 
 VJ2018minus19damBin <- calc(VJ2018minus19damBin, fun)
 # LCC exclude: water; barren; dry Heath; wetland; gram_meadow
 VJ2018minus19damBin <- raster::mask(VJ2018minus19damBin, VJlccDis[VJlccDis$class %in% c("water", "barren","dry tundra","wetland","gram_meadow"),], inverse =T, updatevalue = 0)
@@ -185,13 +187,14 @@ DamPlots
 plot(NF2018minus19damBin)
 plot(DamPlots, add = T)
 
-
+# Load change detection rasters
 DamRastList <- list(NF2018minus19damBinBest,NT2018minus19damBinBest,VJ2018minus19damBinBest,KJ2018minus19damBinBest,
                     NF2018minus19damBinMin,NT2018minus19damBinMin,VJ2018minus19damBinMin,KJ2018minus19damBinMin,
                     NF2018minus19damBinMax,NT2018minus19damBinMax,VJ2018minus19damBinMax,KJ2018minus19damBinMax)
 
 DamRastList
 
+# Extract the damage per plot and area
 DamList <- list()
 endCluster()
 for (i in 1:length(DamRastList)){
@@ -209,7 +212,7 @@ DamList <- unlist(DamList, recursive =F)
 ##################################################
 # extract values
 
-# caluclate sum:
+# calculate sum:
 templist <- list()
 for (i in 1:length(DamList)){
   print(names(DamList[i]))
@@ -231,15 +234,14 @@ damPercTable$type <- substr(damPercTable$names, nchar(damPercTable$names)-1, nch
 damPercTable
 
 
-ggplot(damPercTable, aes(area, damPerc )) +
-  geom_point( aes(color = type))
-#  geom_bar( stat = "identity", aes(fill = type), position = position_dodge())
-
-
 ###############3
 # Load ground control data
-# use rules 3; 1 per rodent impact, max 1
-sumTable <- read_csv('~/Data/Drones/Damage/DamageR/sumTablerules4_eachRodentcounts1nomaxbut3.csv')
+##############################################################
+## Combine with ground survey information
+## Load digitized ground inventory data
+# Use from second script
+sumTable
+
 sumTable$damPercField <-  sumTable$damCount / 400 *100
 sumTable
 
@@ -259,19 +261,14 @@ temp2$error <- ifelse(grepl("Max",temp2$names), "max", temp2$error)
 temp2$error
 
 Fig_S1_ImpactCount <- ggplot(data=temp2[temp2$error %in% c("best"),], aes(x=damCount, y = damPerc)) +
-  #geom_smooth(aes(x=damCount, y = damPerc,colour = area.x), method=lm, se=F) +
   geom_errorbar(aes(ymin=temp2[temp2$error %in% c("min"),]$damPerc,ymax=temp2[temp2$error %in% c("max"),]$damPerc),col = "grey30",width = 0.5,) +# makes it unreadable
-  #geom_point()
-  geom_point(aes(color = habitat)) + #, shape = area.x)) + #, shape = type.x) ) +
-  #geom_point(data=function(temp2){temp2[temp2$error %in% c("best"),]}, aes(color = area.x, shape = type.x) ) 
+  geom_point(aes(color = habitat)) + #
   geom_smooth(aes(x=damCount, y = damPerc), col ="black", method=lm, se=F) +
-  #theme_cowplot(10) +
   theme_classic() +
   scale_color_npg() +
   theme(legend.position=c(0.2, 0.85),
         legend.title=element_blank()) +
   labs(y= "Mapped impact areas in % of 2m x 2m plots", x = "Field inventory impact count in 2m x 2m plots") 
-#xlim( c(0, 800)) + ylim( c(0, 80))
 Fig_S1_ImpactCount
 
 ggsave("Plots/Fig_S1_ImpactCount.pdf", Fig_dam_count_comp,  width = 12, height = 12, units = "cm")

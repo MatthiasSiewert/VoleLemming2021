@@ -2,7 +2,6 @@
 # author: Matthias Siewert
 # matthias.siewert@umu.se
 ########
-## 2020-05-02
 ###
 # Generate a summary table (Table 1)
 ###

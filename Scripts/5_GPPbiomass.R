@@ -2,7 +2,6 @@
 # author: Matthias Siewert
 # matthias.siewert@umu.se
 ########
-## 2020-08-08
 ###
 # This script is to extract rodent impact from the UAV at the location of ground plots
 # then combines this with ground inventory
