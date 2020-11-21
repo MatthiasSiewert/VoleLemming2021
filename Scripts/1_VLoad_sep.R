@@ -51,3 +51,10 @@ for (i in VJrast) {writeRaster(mask(crop(raster(paste0('Raster/2_NDVI/VJ/', i)),
 KJrast <- list.files("Raster/2_NDVI/KJ/",pattern = "_snow.tif$", full.names=F, recursive =T)
 for (i in KJrast) {writeRaster(mask(crop(raster(paste0('Raster/2_NDVI/KJ/', i)),KJarea), KJarea), paste0('Raster/4_Cropped/',i,'crp.tif'),overwrite =T)}
 
+Rastlist <- sapply(Rastlist, function(filename) {filename = raster(filename);return(filename)})
+for (i in 1:length(Rastlist)) print(res(Rastlist[[i]]))
+
+# Check resolutions, there should always be a pair
+Rastlist <- list.files("Raster/2_NDVI",pattern = ".tif$", full.names=T, recursive =T)
+Rastlist <- sapply(Rastlist, function(filename) {filename = raster(filename);return(filename)})
+for (i in 1:length(Rastlist)) print(res(Rastlist[[i]]))
