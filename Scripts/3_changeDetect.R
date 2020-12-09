@@ -266,7 +266,7 @@ Fig_S1_ImpactCount <- ggplot(data=temp2[temp2$error %in% c("best"),], aes(x=damC
   geom_smooth(aes(x=damCount, y = damPerc), col ="black", method=lm, se=F) +
   theme_classic() +
   scale_color_npg() +
-  theme(legend.position=c(0.2, 0.85),
+  theme(legend.position=c(0.25, 0.80),
         legend.title=element_blank()) +
   labs(y= "Mapped impact areas in % of 2m x 2m plots", x = "Field inventory impact count in 2m x 2m plots") 
 Fig_S1_ImpactCount
